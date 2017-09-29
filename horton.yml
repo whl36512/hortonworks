@@ -1,0 +1,56 @@
+# To run playbook:
+# ansible-playbook  -i cluster.txt --tags mytag   horton.yml
+
+- hosts: nodes
+  tasks:
+    - yum: name=ntp state=present
+    #- shell: yum install -y ntp
+    - shell: chkconfig ntpd on
+    - shell: chkconfig iptables off
+    - shell: /etc/init.d/iptables stop
+    #- shell: wget http://public-repo-1.hortonworks.com/ambari/centos6/2.x/updates/2.5.2.0/ambari.repo
+    #- shell: wget http://public-repo-1.hortonworks.com/HDP/centos6/2.x/updates/2.6.2.0/hdp.repo
+    #- shell: wget http://public-repo-1.hortonworks.com/HDP/centos6/2.x/updates/2.6.2.0/hdp.repo
+  tags:
+    - os
+
+- hosts: ambarimaster
+  tasks:
+    #- file: state=directory path=~/download
+    - get_url: url=http://public-repo-1.hortonworks.com/ambari/centos6/2.x/updates/2.5.2.0/ambari.repo dest=/etc/yum.repos.d/
+    - shell: yum repolist
+      register: output
+    - debug: var=output.stdout_lines
+
+    - yum: name=ambari-server state=present
+    - shell: ambari-server -s setup     # run silent, accepts all default prompt values
+    # The default PostgreSQL database name is ambari. The default user name and password are ambari/bigdata
+  tags:
+    - install.ambari 
+
+- hosts: ambarimaster
+  tasks:
+    - shell: ambari-server start
+    - shell: ambari-server status
+      register: output
+    - debug: var=output.stdout_lines
+  tags:
+    - start.ambari-server
+
+- hosts: ambarimaster
+  tasks:
+    - shell: ambari-server stop
+      register: output
+    - debug: var=output.stdout_lines
+  tags:
+    - stop.ambari-server
+
+
+- hosts: nodes
+  tasks:
+    - shell: grep HOSTNAME /etc/sysconfig/network
+      register: output
+    - debug: var=output.stdout_lines
+  tags:
+    - adhoc
+

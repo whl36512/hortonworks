@@ -1,0 +1,10 @@
+[nodes]
+ip-172-31-13-169.us-west-2.compute.internal
+ip-172-31-0-91.us-west-2.compute.internal
+ip-172-31-11-25.us-west-2.compute.internal
+ip-172-31-13-177.us-west-2.compute.internal
+
+[ambarimaster]
+ip-172-31-11-25.us-west-2.compute.internal
+
+
