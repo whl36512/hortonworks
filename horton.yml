@@ -4,13 +4,9 @@
 - hosts: nodes
   tasks:
     - yum: name=ntp state=present
-    #- shell: yum install -y ntp
     - shell: chkconfig ntpd on
     - shell: chkconfig iptables off
     - shell: /etc/init.d/iptables stop
-    #- shell: wget http://public-repo-1.hortonworks.com/ambari/centos6/2.x/updates/2.5.2.0/ambari.repo
-    #- shell: wget http://public-repo-1.hortonworks.com/HDP/centos6/2.x/updates/2.6.2.0/hdp.repo
-    #- shell: wget http://public-repo-1.hortonworks.com/HDP/centos6/2.x/updates/2.6.2.0/hdp.repo
   tags:
     - os
 
